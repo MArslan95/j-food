@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ScrollView, Text } from 'react-native';
 import { Card } from 'react-native-elements';
 import { DISHES } from '../shared/dishes';
-import { PROMOTIONS} from '../shared/promotion';
+import { PROMOTIONS } from '../shared/promotion';
 import { LEADERS } from '../shared/leader';
 
 function RenderItem(props) {
@@ -12,8 +12,8 @@ function RenderItem(props) {
     if (item != null) {
         return (
             <Card
-              listTitle={item.name}
-                Listsubtitle={item.designation}
+                title={item.name}
+                subtitle={item.designation}
                 leftAvatar={{ source: require('./images/uthappizza.png') }} >
                 <Text
                     style={{ margin: 10 }}>
