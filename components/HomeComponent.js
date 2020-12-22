@@ -14,7 +14,7 @@ function RenderItem(props) {
             <Card
                 title={item.name}
                 subtitle={item.designation}
-                leftAvatar={{ source: require('./images/uthappizza.png') }} >
+                image={{ source: require('./images/uthappizza.png') }} >
                 <Text
                     style={{ margin: 10 }}>
                     {item.description}</Text>
