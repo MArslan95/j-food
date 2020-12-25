@@ -66,7 +66,7 @@ class About extends Component {
                         data={this.state.leaders}
                         renderItem={renderMenuItem}
                         keyExtractor={item => item.id.toString()}
-                        leftAvatar={require('./images/uthappizza.png')}
+                        image={require('./images/alberto.png')}
                     />
                 </Card>
 
