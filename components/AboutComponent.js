@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import { Text,  FlatList } from 'react-native';
+import { Text, FlatList } from 'react-native';
 import { Card, ListItem, Avatar } from 'react-native-elements';
-import { LEADERS } from '../shared/leader';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
 
-const renderMenuItem = ({ item, index }) => {
+const mapStateToProps = state => {
+    return {
+        leaders: state.leaders
+    }
+}
+
+const renderLeader = ({ item, index }) => {
     return (
         <ListItem key={index} >
-            <Avatar source={require('./images/alberto.png')} />
+            <Avatar source={{ uri: baseUrl + item.image }} />
             <ListItem.Content>
                 <ListItem.Title>{item.name}</ListItem.Title>
                 <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
@@ -37,18 +44,11 @@ const History = () => {
     )
 }
 class About extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            leaders: LEADERS
-        }
-    }
-    // static navigationOptions = {
-    //     title: 'Contact'
-    // };
-    componentDidMount() {
-        // console.log(this.props.navigation);
-    }
+
+
+    // componentDidMount() {
+    //     // console.log(this.props.navigation);
+    // }
 
     render() {
         return (
@@ -62,11 +62,16 @@ class About extends Component {
                     }}>
                         {'Corporate Leadership'}
                     </Card.Title>
-                    <FlatList
-                        data={this.state.leaders}
-                        renderItem={renderMenuItem}
+                    {/* <FlatList
+                        data={this.props.leaders.leaders}
+                        renderItem={renderLeaders}
                         keyExtractor={item => item.id.toString()}
-                        image={require('./images/alberto.png')}
+                        // image={require('./images/alberto.png')}
+                    /> */}
+                    <FlatList
+                        data={this.props.leaders.leaders}
+                        renderItem={renderLeader}
+                        keyExtractor={item => item.id.toString()}
                     />
                 </Card>
 
@@ -74,4 +79,4 @@ class About extends Component {
         );
     }
 }
-export default About;
+export default connect(mapStateToProps)(About);

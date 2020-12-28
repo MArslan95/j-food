@@ -5,13 +5,23 @@ import Dishdetail from "./DishdetailComponent";
 import Home from "./HomeComponent";
 import Contact from "./ContactComponent";
 import About from "./AboutComponent";
-import {
-  createDrawerNavigator,
-  DrawerItems,
-  SafeAreaView,
-} from "react-navigation";
-import { createStackNavigator } from "react-navigation";
+import {createDrawerNavigator,DrawerItems, SafeAreaView,} from "react-navigation";
+import { createStackNavigator } from "@react-navigation/stack";
 import { Icon } from "react-native-elements";
+import { connect } from 'react-redux';
+import {fetchDishes,fetchComments, fetchPromos, fetchLeaders} from  '../redux/ActionCreators' ;
+
+const mapStateToProps = state => {
+    return {
+        
+    }
+}
+const mapDispatchToProps =  dispatch =>({
+  fetchDishes:()=>dispatch(fetchDishes()),
+  fetchComments:()=>dispatch(fetchComments()),
+  fetchPromos:()=>dispatch(fetchPromos()),
+  fetchLeaders:()=>dispatch(fetchLeaders()),
+})
 
 const MenuNavigator = createStackNavigator(
   {
@@ -207,15 +217,18 @@ const CustomDrawerContentComponent = (props) => (
   </ScrollView>
 );
 class Main extends Component {
+//when the main component mount it issue a dispatch to load all 4 of them when you seethe action 
+//creator response to this each of them issue a fetch from the server when the data is obtain it upload the data in to the store.
+componentDidMount(){
+  this.props.fetchDishes();
+  this.props.fetchComments();
+  this.props.fetchPromos();
+  this.props.fetchLeaders();
+}
+
   render() {
     return (
-      <View
-        style={{
-          flex: 1,
-          paddingTop:
-            Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight,
-        }}
-      >
+      <View style={{ flex: 1,paddingTop:  Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight, }}>
         <MainNavigator />
       </View>
     );
@@ -245,4 +258,4 @@ const styles = StyleSheet.create({
   }
 
 })
-export default Main;
+export default connect (mapStateToProps,mapDispatchToProps) (Main);
