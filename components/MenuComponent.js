@@ -3,7 +3,7 @@ import { View, FlatList } from 'react-native';
 import { Tile } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
-
+import { Loading } from './LoadingComponent';
 const mapStateToProps = state => {
     return {
         dishes: state.dishes
@@ -11,12 +11,7 @@ const mapStateToProps = state => {
 }
 
 class Menu extends Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         dishes: DISHES
-    //     };
-    // }
+    
     static navigationOptions = {
         title: 'Menu'
     };
@@ -39,15 +34,36 @@ class Menu extends Component {
             );
         };
         const { navigate } = this.props.navigation;
-        return (
-            <View>
-            <FlatList
-                data={this.props.dishes.dishes}
-                renderItem={renderMenuItem}
-                keyExtractor={item => item.id.toString()}
-            />
-            </View>
-        );
+        if (this.props.dishes.isLoading) {
+            return(
+                <Loading />
+            );
+        }
+        else if (this.props.dishes.errMess) {
+            return(
+                <View>            
+                    <Text>{props.dishes.errMess}</Text>
+                </View>            
+            );
+        }
+        else {
+            return (
+                <FlatList 
+                    data={this.props.dishes.dishes}
+                    renderItem={renderMenuItem}
+                    keyExtractor={item => item.id.toString()}
+                    />
+            );
+        }
+        // return (
+        //     <View>
+        //     <FlatList
+        //         data={this.props.dishes.dishes}
+        //         renderItem={renderMenuItem}
+        //         keyExtractor={item => item.id.toString()}
+        //     />
+        //     </View>
+        // );
 
     }
 }

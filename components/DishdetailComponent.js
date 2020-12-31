@@ -1,40 +1,20 @@
-// import React, { Component } from 'react';
-// import { DISHES } from '../shared/dishes'
-
-// class Dishdetail extends Component {
-
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             dishes: DISHES
-//         };
-//     }
-
-//     static navigationOptions = {
-//         title: 'Dish Details'
-//     };
-
-//     render() {
-//         const dishId = this.props.navigation.getParam('dishId','');
-//         return(
-//             <RenderDish dish={this.state.dishes[+dishId]} />
-//         );
-//     }
-// }
-// export default Dishdetail;
 import React, { Component } from 'react';
 import { View, Text, ScrollView, FlatList } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
-
+import{postFavorite} from '../redux/ActionCreators'
 const mapStateToProps = state => {
     return {
         dishes: state.dishes,
-        comments: state.comments
+        comments: state.comments,
+        favorite:state.favorite
     }
 }
 
+const mapDispatchToProps= dispatch =>({
+    postFavorite:(dishId)=>dispatch(postFavorite(dishId))
+})
 
 function RenderDish(props) {
 
@@ -90,16 +70,10 @@ function RenderComments(props) {
 }
 
 class Dishdetail extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            favorites: [] // Intilazing the array
-        };
-    }
     //This Function save the favorite dish id into the array we created name as favorite  
     markFavorite(dishId) {
-        this.setState({ favorites: this.state.favorites.concat(dishId) })
+        // this.setState({ favorites: this.state.favorites.concat(dishId) })
+        this.props.postFavorite(dishId);
     }
     static navigationOptions = {
         title: 'Dish Details'
@@ -113,7 +87,8 @@ class Dishdetail extends Component {
             <ScrollView>
                 <RenderDish dish={this.props.dishes.dishes[+dishId]}
                     //some,filter is a javascript array operation  
-                    favorite={this.state.favorites.some(el => el === dishId)}
+                    // favorite={this.state.favorites.some(el => el === dishId)}
+                    favorite={this.props.favorites.some(el => el === dishId)}
                     onPress={this.markFavorite(dishId)}
                 />
                 <RenderComments comments={this.props.comments.comments.filter((comment) => comment.dishId === dishId)} />
@@ -122,4 +97,4 @@ class Dishdetail extends Component {
         );
     }
 }
-export default connect(mapStateToProps)(Dishdetail);
+export default connect(mapStateToProps,mapDispatchToProps)(Dishdetail);
