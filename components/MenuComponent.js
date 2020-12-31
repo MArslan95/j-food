@@ -11,7 +11,7 @@ const mapStateToProps = state => {
 }
 
 class Menu extends Component {
-    
+
     static navigationOptions = {
         title: 'Menu'
     };
@@ -27,32 +27,32 @@ class Menu extends Component {
                     featured
                     hideChevron={true}
                     onPress={() => navigate('Dishdetail', { dishId: item.id })}
-                   imageSrc={{ uri:baseUrl + item.image }}
-                    // data={this.props.dishes}
+                    imageSrc={{ uri: baseUrl + item.image }}
+                // data={this.props.dishes}
 
                 />
             );
         };
         const { navigate } = this.props.navigation;
         if (this.props.dishes.isLoading) {
-            return(
+            return (
                 <Loading />
             );
         }
         else if (this.props.dishes.errMess) {
-            return(
-                <View>            
+            return (
+                <View>
                     <Text>{props.dishes.errMess}</Text>
-                </View>            
+                </View>
             );
         }
         else {
             return (
-                <FlatList 
+                <FlatList
                     data={this.props.dishes.dishes}
                     renderItem={renderMenuItem}
                     keyExtractor={item => item.id.toString()}
-                    />
+                />
             );
         }
         // return (

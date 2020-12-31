@@ -1,26 +1,27 @@
 import React, { Component } from "react";
-import { View, Platform, Image, StyleSheet, ScrollView ,Text} from "react-native";
+import { View, Platform, Image, StyleSheet, ScrollView, Text } from "react-native";
 import Menu from "./MenuComponent";
 import Dishdetail from "./DishdetailComponent";
+import Reservation from "./ReservationComponent";
 import Home from "./HomeComponent";
 import Contact from "./ContactComponent";
 import About from "./AboutComponent";
-import {createDrawerNavigator,DrawerItems, SafeAreaView,} from "react-navigation";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator, DrawerItems, SafeAreaView, } from "react-navigation";
+import { createStackNavigator } from "react-navigation";
 import { Icon } from "react-native-elements";
 import { connect } from 'react-redux';
-import {fetchDishes,fetchComments, fetchPromos, fetchLeaders} from  '../redux/ActionCreators' ;
+import { fetchDishes, fetchComments, fetchPromos, fetchLeaders } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
-    return {
-        
-    }
+  return {
+
+  }
 }
-const mapDispatchToProps =  dispatch =>({
-  fetchDishes:()=>dispatch(fetchDishes()),
-  fetchComments:()=>dispatch(fetchComments()),
-  fetchPromos:()=>dispatch(fetchPromos()),
-  fetchLeaders:()=>dispatch(fetchLeaders()),
+const mapDispatchToProps = dispatch => ({
+  fetchDishes: () => dispatch(fetchDishes()),
+  fetchComments: () => dispatch(fetchComments()),
+  fetchPromos: () => dispatch(fetchPromos()),
+  fetchLeaders: () => dispatch(fetchLeaders()),
 })
 
 const MenuNavigator = createStackNavigator(
@@ -135,6 +136,30 @@ const AboutNavigator = createStackNavigator(
     }),
   }
 );
+const ReservationNavigator = createStackNavigator(
+  {
+    Reservation: { screen: Reservation },
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      headerStyle: {
+        backgroundColor: "#512DA8",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        color: "#fff",
+      },
+      headerLeft: (
+        <Icon
+          name="menu"
+          size={24}
+          color="white"
+          onPress={() => navigation.toogleDrawer()}
+        />
+      ),
+    }),
+  }
+);
 
 const MainNavigator = createDrawerNavigator(
   {
@@ -188,10 +213,25 @@ const MainNavigator = createDrawerNavigator(
         ),
       },
     },
+    Reservation: {
+      screen: ReservationNavigator,
+      navigationOptions: {
+        title: "Reserve Table",
+        drawerLabel: "Reserve Table",
+        drawerIcon: ({ tintColor }) => (
+          <Icon
+            name="cutlery"
+            type="font-awesome"
+            size={24}
+            color={tintColor}
+          />
+        ),
+      },
+    }
   },
   {
     drawerBackgroundColor: "#D1C4E9",
-    contentComponent:CustomDrawerContentComponent
+    contentComponent: CustomDrawerContentComponent
   }
 );
 const CustomDrawerContentComponent = (props) => (
@@ -217,18 +257,18 @@ const CustomDrawerContentComponent = (props) => (
   </ScrollView>
 );
 class Main extends Component {
-//when the main component mount it issue a dispatch to load all 4 of them when you seethe action 
-//creator response to this each of them issue a fetch from the server when the data is obtain it upload the data in to the store.
-componentDidMount(){
-  this.props.fetchDishes();
-  this.props.fetchComments();
-  this.props.fetchPromos();
-  this.props.fetchLeaders();
-}
+  //when the main component mount it issue a dispatch to load all 4 of them when you seethe action 
+  //creator response to this each of them issue a fetch from the server when the data is obtain it upload the data in to the store.
+  componentDidMount() {
+    this.props.fetchDishes();
+    this.props.fetchComments();
+    this.props.fetchPromos();
+    this.props.fetchLeaders();
+  }
 
   render() {
     return (
-      <View style={{ flex: 1,paddingTop:  Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight, }}>
+      <View style={{ flex: 1, paddingTop: Platform.OS === "ios" ? 0 : Expo.Constants.statusBarHeight, }}>
         <MainNavigator />
       </View>
     );
@@ -242,20 +282,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#512Da8',
     height: 140,
     alignItems: 'center',
-    justifyContent:'center',
-    flex:1,
-    flexDirection:'row'
+    justifyContent: 'center',
+    flex: 1,
+    flexDirection: 'row'
   },
-  drawerHeaderText:{
-    color:'white',
-    fontSize:24,
-    fontWeight:'bold'
+  drawerHeaderText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold'
   },
-  drawerImage:{
-    margin:10,
-    width:80,
-    height:60 
+  drawerImage: {
+    margin: 10,
+    width: 80,
+    height: 60
   }
 
 })
-export default connect (mapStateToProps,mapDispatchToProps) (Main);
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
