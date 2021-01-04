@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, Switch, Button } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Switch, Button, Modal } from 'react-native';
 import { Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 import { Picker } from '@react-native-community/picker';
@@ -10,21 +10,31 @@ class Reservation extends Component {
         this.setState = {
             guests: 1,
             smoking: false,
-            date: ''
+            date: '',
+            showModal: false //For the use of  Model we have to define the state of themodel in our class componenet
+
         }
     }
 
     static navigationOption = {
         title: 'Reserve Table'
     }
+
+    toggleModel() {
+        this.setState({ showModel: !this.setState.showModal })
+    }
     handleReservation() {
         console.log(JSON.stringify(this.state));
+        this.toggleModel();
+    }
+    resetForm() {
         this.setState({
             guests: 1,
             smoking: false,
             date: ''
         });
     }
+
     render() {
         return (
             <ScrollView >
@@ -81,6 +91,21 @@ class Reservation extends Component {
                         accessibilityLabel='Learn more about purple button'
                     />
                 </View>
+                <Modal animationType={'slide'} transparent={false} visible={this.setState.showModal}
+                    onDismiss={() => { this.toggleModel(); this.resetForm() }}
+                >
+                    <View style={styles.model}>
+                        <Text style={styles.modelTitle}>
+                            Your Reservation
+                        </Text>
+                        <Text style={styles.modelTitle}>Number Of Guests {this.state.guests} </Text>
+                        <Text style={styles.modelTitle}> Smoking? : {this.state.smoking ? 'Yes' : 'No'} </Text>
+                        <Text style={styles.modelTitle}>Date and Time {this.state.date} </Text>
+                        <Button onPress={() => { this.toggleModel(); this.resetForm() }} color='#512DA8'
+                            title="Close"></Button>
+                    </View>
+
+                </Modal>
             </ScrollView>
         )
     }
@@ -99,6 +124,22 @@ const styles = StyleSheet.create({
     },
     formItem: {
         flex: 1
+    },
+    model: {
+        justifyContent: 'center',
+        margin: 20
+    },
+    modelTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        backgroundColor: '#512DA8',
+        textAlign: 'center',
+        color: 'white',
+        marginBottom: 20
+    },
+    modelText: {
+        fontSize: 18,
+        margin: 10
     }
 })
 export default Reservation
