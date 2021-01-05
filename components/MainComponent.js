@@ -3,6 +3,7 @@ import { View, Platform, Image, StyleSheet, ScrollView, Text } from "react-nativ
 import Menu from "./MenuComponent";
 import Dishdetail from "./DishdetailComponent";
 import Reservation from "./ReservationComponent";
+import Favorite from "./FavoriteComponent";
 import Home from "./HomeComponent";
 import Contact from "./ContactComponent";
 import About from "./AboutComponent";
@@ -24,6 +25,7 @@ const mapDispatchToProps = dispatch => ({
   fetchLeaders: () => dispatch(fetchLeaders()),
 })
 
+//MenuNavigator
 const MenuNavigator = createStackNavigator(
   {
     Menu: {
@@ -62,6 +64,7 @@ const MenuNavigator = createStackNavigator(
     },
   }
 );
+//HomeNavigator
 const HomeNavigator = createStackNavigator(
   {
     Home: { screen: Home },
@@ -86,7 +89,7 @@ const HomeNavigator = createStackNavigator(
     }),
   }
 );
-
+//ContactNavigator
 const ContactNavigator = createStackNavigator(
   {
     Contact: { screen: Contact },
@@ -111,7 +114,7 @@ const ContactNavigator = createStackNavigator(
     }),
   }
 );
-
+//AboutNavigator
 const AboutNavigator = createStackNavigator(
   {
     About: { screen: About },
@@ -136,6 +139,7 @@ const AboutNavigator = createStackNavigator(
     }),
   }
 );
+//Reservation Navigator
 const ReservationNavigator = createStackNavigator(
   {
     Reservation: { screen: Reservation },
@@ -160,7 +164,32 @@ const ReservationNavigator = createStackNavigator(
     }),
   }
 );
-
+ //Favorite Navigator
+ const FavoriteNavigator = createStackNavigator(
+  {
+    Favorite: { screen: Favorite },
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      headerStyle: {
+        backgroundColor: "#512DA8",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        color: "#fff",
+      },
+      headerLeft: (
+        <Icon
+          name="menu"
+          size={24}
+          color="white"
+          onPress={() => navigation.toogleDrawer()}
+        />
+      ),
+    }),
+  }
+);
+//MainNavigator 
 const MainNavigator = createDrawerNavigator(
   {
     Home: {
@@ -221,6 +250,21 @@ const MainNavigator = createDrawerNavigator(
         drawerIcon: ({ tintColor }) => (
           <Icon
             name="cutlery"
+            type="font-awesome"
+            size={24}
+            color={tintColor}
+          />
+        ),
+      },
+    },
+    Favorite: {
+      screen: FavoriteNavigator,
+      navigationOptions: {
+        title: "My Favorite",
+        drawerLabel: "My Favorite",
+        drawerIcon: ({ tintColor }) => (
+          <Icon
+            name="heart"
             type="font-awesome"
             size={24}
             color={tintColor}
