@@ -1,17 +1,22 @@
 import React from 'react';
 import Main from './components/MainComponent';
-import {Provider} from 'react-redux';
-import {ConfigureStore} from './redux/configureStore'
-
-const store=ConfigureStore();
+import { Provider } from 'react-redux';
+import { ConfigureStore } from './redux/configureStore'
+//PersistGate add  sufficent supposrt to our app
+import { PersistGate } from 'redux-persist/es/integration/react';
+import { Loading } from './components/LoadingComponent'
+const { persistor, store } = ConfigureStore();
 
 export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-<Main />
+       {/* Persist contain 2 attibute Loading Component and persistor */}
+        <PersistGate loading={<Loading/>} persistor={persistor}>
+          <Main />
+        </PersistGate>
       </Provider>
-      
+
     );
   }
 }

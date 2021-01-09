@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, FlatList, Button, Modal } from 'react-native';
+import { View, Text, ScrollView, FlatList, Button, Modal, Alert, PanResponder } from 'react-native';
 import { Card, Icon, Input, Rating } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
@@ -22,10 +22,59 @@ const mapDispatchToProps = dispatch => ({
 function RenderDish(props) {
 
     const dish = props.dish;
+    handleViewRef = ref => this.view = ref;
+    //Create a funcgion which recevie the parameter to swipe the left and right guesture
+    //contain different 4 properties to recoginze the gesture
+    const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
+        if ( dx < -200 )
+            return true;
+        else
+            return false;
+    }
+    //Create function to drag for Comment
+    const recognizeComment = ({ moveX, moveY, dx, dy}) => {
+        if (dx > 200)
+            return true;
+        else
+            return false;
+    }
+
+    //create another function name as panResponder which receive different callbacks  functions
+    const panResonder = panResonder.create({
+       //first callback Function when the user gesture begin on the screen setup a,
+       // fucntion which return to indeicate this pan responder to that gesture and receive a evvetn and gesture state
+        onStartShouldSetPanResponder: (e, gestureState) => {
+            return true;
+        },
+        //2nd Callabck will be called when the pan responder start recognainzing and it is granted the geture to the screen
+        onPanResponderGrant: () => {this.view.rubberBand(1000).then(endState => console.log(endState.finished ? 'finished' : 'cancelled'));},
+        //3rd Call back envoke when thhe user finish the gesture
+        onPanResponderEnd: (e, gestureState) => {
+            console.log("pan responder end", gestureState);
+            if (recognizeDrag(gestureState))
+                Alert.alert(
+                    'Add Favorite',
+                    'Are you sure you wish to add ' + dish.name + ' to favorite?',
+                    [
+                    {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                    {text: 'OK', onPress: () => {props.favorite ? console.log('Already favorite') : props.onPress()}},
+                    ],
+                    { cancelable: false }
+                );
+            
+            else (recognizeComment(gestureState)) 
+                props.toggleModal();
+            
+
+            return true;
+        }
+    });
 
     if (dish != null) {
         return (
-            <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+            <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
+            ref={this.handleViewRef}
+            {...panResonder.panHandlers}>
                 <Card
                     featuredTitle={dish.name}
                     image={{ uri: baseUrl + dish.image }}>
