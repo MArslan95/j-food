@@ -143,12 +143,13 @@
 // })
 // export default Reservation
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Switch, Button, Modal, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, StyleSheet, Switch, Button, TouchableOpacity, Alert } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { Picker } from "@react-native-community/picker";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment';
 import * as Animatable from 'react-native-animatable';
+import { Permissions, Notifications } from 'expo';
 
 
 class Reservation extends Component {
@@ -166,11 +167,17 @@ class Reservation extends Component {
     handleReservation() {
         Alert.alert(
             'Your Reservation OK?',
-            'Number of Guests: ' + this.state.guests  + '\nSmoking? ' + this.state.smoking + '\nDate and Time: ' + this.state.date,
+            'Number of Guests: ' + this.state.guests + '\nSmoking? ' + this.state.smoking + '\nDate and Time: ' + this.state.date,
             [
-                {text: 'Cancel', onPress: () => this.resetForm(), style: 'cancel'},
-                {text: 'Ok', onPress: () => this.resetForm()}
-            ]
+                { text: 'Cancel', onPress: () => { this.resetForm() }, style: 'cancel' },
+                {
+                    text: 'Ok', onPress: () => {
+                        this.resetForm()
+                        this.presentLocalNotification(this.state.date)
+                    }
+                }
+            ],
+            { cancelable: false }
         );
     }
 
@@ -184,23 +191,51 @@ class Reservation extends Component {
             showModal: false
         });
     }
+    //Create function to Obtaon the notification    
+    async obtainNotificationPermission() {
+        let permission = await Permissions.getAsync(Permissions.USER_FACING_NOTIFICATIONS);
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(Permissions.USER_FACING_NOTIFICATIONS);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to show notifications');
+            }
+        }
+        return permission;
+    }
+    //Create Function to present Local Notification
+    async presentLocalNotification(date) {
+        await this.obtainNotificationPermission();
+        Notifications.presentLocalNotificationAsync({
+            title: 'Your Reservation',
+            body: 'Reservation for ' + date + ' requested',
+            //For IOS We generate Sound as well as Android and it allows the vibrate and color
+            ios: {
+                sound: true
+            },
+            android: {
+                sound: true,
+                vibrate: true,
+                color: '#512DA8'
+            }
+        });
+    }
 
     render() {
-        return(
+        return (
             <Animatable.View animation="zoomIn" duration={1000}>
                 <View style={styles.formRow}>
                     <Text style={styles.formLabel}>Number of Guests</Text>
                     <Picker
                         style={styles.formItem}
                         selectedValue={this.state.guests}
-                        onValueChange={(itemValue, itemIndex) => this.setState({guests: itemValue})}
+                        onValueChange={(itemValue, itemIndex) => this.setState({ guests: itemValue })}
                     >
-                        <Picker.Item label="1" value="1"/>
-                        <Picker.Item label="2" value="2"/>
-                        <Picker.Item label="3" value="3"/>
-                        <Picker.Item label="4" value="4"/>
-                        <Picker.Item label="5" value="5"/>
-                        <Picker.Item label="6" value="6"/>
+                        <Picker.Item label="1" value="1" />
+                        <Picker.Item label="2" value="2" />
+                        <Picker.Item label="3" value="3" />
+                        <Picker.Item label="4" value="4" />
+                        <Picker.Item label="5" value="5" />
+                        <Picker.Item label="6" value="6" />
                     </Picker>
                 </View>
                 <View style={styles.formRow}>
@@ -209,7 +244,7 @@ class Reservation extends Component {
                         style={styles.formItem}
                         value={this.state.smoking}
                         onTintColor='#512DA8'
-                        onValueChange={(value) => this.setState({smoking: value})}
+                        onValueChange={(value) => this.setState({ smoking: value })}
                     />
                 </View>
                 <View style={styles.formRow}>
@@ -221,10 +256,10 @@ class Reservation extends Component {
                             borderWidth: 2,
                             flexDirection: 'row'
                         }}
-                        onPress={() => this.setState({show: true, mode: 'date'})}
+                        onPress={() => this.setState({ show: true, mode: 'date' })}
                     >
                         <Icon type='font-awesome' name='calendar' color='#512DA8' />
-                        <Text>{' ' + Moment(this.state.date).format('DD-MMM-YYYY h:mm A') }</Text>
+                        <Text>{' ' + Moment(this.state.date).format('DD-MMM-YYYY h:mm A')}</Text>
                     </TouchableOpacity>
                     {/* Date Time Picker */}
                     {this.state.show && (
@@ -249,7 +284,7 @@ class Reservation extends Component {
                     )}
                 </View>
                 <View style={styles.formRow}>
-                    <Button 
+                    <Button
                         onPress={() => this.handleReservation()}
                         title="Reserve"
                         color="#512DA8"

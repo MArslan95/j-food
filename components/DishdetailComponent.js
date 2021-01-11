@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, FlatList, Button, Modal, Alert, PanResponder } from 'react-native';
+import { View, Text, ScrollView, FlatList, Button, Modal, Alert, PanResponder,Share } from 'react-native';
 import { Card, Icon, Input, Rating } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
@@ -40,7 +40,7 @@ function RenderDish(props) {
     }
 
     //create another function name as panResponder which receive different callbacks  functions
-    const panResonder = panResonder.create({
+    const panResonder = PanResponder.create({
        //first callback Function when the user gesture begin on the screen setup a,
        // fucntion which return to indeicate this pan responder to that gesture and receive a evvetn and gesture state
         onStartShouldSetPanResponder: (e, gestureState) => {
@@ -70,6 +70,19 @@ function RenderDish(props) {
         }
     });
 
+    //Share Dish Function here it contain 3 parameter title message url
+    const shareDish=(title,message,url)=>{
+       //here  Share api contain JS object as parameter
+         Share.share({
+             title:title,
+             message:title+':'+ message+''+url,
+            url:url        
+         },{
+            //ot take one more parameter that take dialog that popup there
+            dialogTitle:'Share'+ title 
+         }
+         )
+    }
     if (dish != null) {
         return (
             <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
@@ -94,6 +107,17 @@ function RenderDish(props) {
                         reverse
                         type='font-awesome'
                     />
+                    <Icon
+                            raised
+                            reverse
+                            name='share'
+                            type='font-awesome'
+                            color='#51D2A8'
+                            style={styles.cardItem}
+                            //onPress finction contain 3 parameter name descripton and image
+                            onPress={() => shareDish(dish.name, dish.description, baseUrl + dish.image)}
+                     />
+                            
                 </Card>
             </Animatable.View>
         );

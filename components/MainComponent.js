@@ -4,6 +4,7 @@ import Menu from "./MenuComponent";
 import Dishdetail from "./DishdetailComponent";
 import Reservation from "./ReservationComponent";
 import Favorite from "./FavoriteComponent";
+import Login from "./LoadingComponent";
 import Home from "./HomeComponent";
 import Contact from "./ContactComponent";
 import About from "./AboutComponent";
@@ -189,9 +190,49 @@ const ReservationNavigator = createStackNavigator(
     }),
   }
 );
+//Lgon Navigator
+const LoginNavigator = createStackNavigator(
+  {
+    Login: { screen: Lgoin },
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      headerStyle: {
+        backgroundColor: "#512DA8",
+      },
+      headerTintColor: "#fff",
+      headerTitleStyle: {
+        color: "#fff",
+      },
+      headerLeft: (
+        <Icon
+          name="menu"
+          size={24}
+          color="white"
+          onPress={() => navigation.toogleDrawer()}
+        />
+      ),
+    }),
+  }
+);
 //MainNavigator 
 const MainNavigator = createDrawerNavigator(
   {
+    Login: 
+  { screen: LoginNavigator,
+    navigationOptions: {
+      title: 'Login',
+      drawerLabel: 'Login',
+      drawerIcon: ({ tintColor, focused }) => (
+        <Icon
+          name='sign-in'
+          type='font-awesome'            
+          size={24}
+          iconStyle={{ color: tintColor }}
+        />
+      ),
+    }
+  },
     Home: {
       screen: HomeNavigator,
       navigationOptions: {
@@ -271,9 +312,11 @@ const MainNavigator = createDrawerNavigator(
           />
         ),
       },
-    }
+    },
+   
   },
   {
+    initialRouteName:'Home',
     drawerBackgroundColor: "#D1C4E9",
     contentComponent: CustomDrawerContentComponent
   }
